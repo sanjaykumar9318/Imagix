@@ -1,0 +1,22 @@
+{
+  "name": "imagix",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "build": "npm install --prefix Backend && npm install --prefix Frontend && npm run build --prefix Frontend",
+    "start": "npm start --prefix Backend"
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sanjaykumar9318/Imagix.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sanjaykumar9318/Imagix/issues"
+  },
+  "homepage": "https://github.com/sanjaykumar9318/Imagix#readme",
+  "description": ""
+}
