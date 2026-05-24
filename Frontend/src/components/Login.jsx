@@ -14,7 +14,7 @@ const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
-    const { backendUrl, setShowLogin, setToken, setUser } = StateStore()
+    const { backendUrl, setShowLogin, setToken, setUser,loadCreditsData } = StateStore()
 
     const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -28,7 +28,7 @@ const Login = () => {
                 { email, password }
             );
 
-            setUser(res.data);
+            await loadCreditsData();
             setShowLogin(false);
 
         } else {
@@ -38,7 +38,7 @@ const Login = () => {
                 { name, email, password }
             );
 
-            setUser(res.data);
+            await loadCreditsData();
             setShowLogin(false);
 
             console.log("data sent successfully");

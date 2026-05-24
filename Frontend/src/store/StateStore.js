@@ -2,14 +2,15 @@ import { create } from "zustand";
 import axios from "axios";
 import { toast } from "react-toastify";
 import axiosInstance from "../lib/axios.js";
-// const backendUrl = import.meta.env.VITE_BACKEND_URL;
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
 const StateStore = create((set, get) => ({
 
   showLogin: true, 
   // for to close login form
   user: true,
-  credit: false,
+  credit: 0,
   
   setShowLogin: (value) => set({ showLogin: value }),
   setToken: (value) => set({ token: value }),
@@ -69,7 +70,9 @@ const StateStore = create((set, get) => ({
     console.log("logoutclicked")
     try{
       await axiosInstance.post('/user/logout')
-      set({user: null});
+      set({user: null,
+        credit:0
+      });
     }
     catch(err){
       console.log(err.message)

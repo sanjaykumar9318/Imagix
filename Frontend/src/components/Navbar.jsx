@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react'
 import { assets } from '../assets/assets'
 import { Link, useNavigate } from 'react-router-dom'
 import StateStore from '../store/StateStore'
+
 const Navbar = () => {
 
     const { setShowLogin,user,credit,logout } = StateStore()
@@ -9,6 +10,10 @@ const Navbar = () => {
 
     const navigate = useNavigate()
     console.log(user)
+    const handleLogout = async () => {
+    await logout()
+    window.location.href = '/'
+}
 
     return (
         <div className='flex items-center justify-between py-4'>
@@ -28,7 +33,7 @@ const Navbar = () => {
                                 <img className='w-10 drop-shadow' src={assets.profile_icon} alt="" />
                                 <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded  pt-12'>
                                     <ul className='list-none m-0 p-2 bg-white rounded-md border  text-sm'>
-                                        <li onClick={logout} className='py-1 px-2 cursor-pointer pr-10'>Logout</li>
+                                        <li onClick={handleLogout} className='py-1 px-2 cursor-pointer pr-10'>Logout</li>
                                     </ul>
                                 </div>
                             </div>

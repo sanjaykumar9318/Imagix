@@ -5,76 +5,57 @@ import { toast } from 'react-toastify'
 import axios from 'axios'
 import { motion } from 'framer-motion'
 import StateStore from '../store/StateStore'
-
+import axiosInstance from '../lib/axios'
 const BuyCredit = () => {
 
   const { backendUrl, loadCreditsData, user, token, setShowLogin } = StateStore()
   const navigate = useNavigate()
 
 
-  // const initPay = async (order) => {
+  const initPay = async (order) => {
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'Credits Payment',
+      description: "Credits Payment",
+      order_id: order.id,
+      receipt: order.receipt,
+      handler: async (response) => {
+        try {
+          const { data } = await axiosInstance.post('/user/verify-razor',response)
+          if (data.success) {
+            loadCreditsData()
+            navigate('/')
+            toast.success('Credit Added')
+          }
+        } catch (error) {
+          toast.error(error.message)
+        }
+      }
+    }
 
-  //   const options = {
-  //     key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-  //     amount: order.amount,
-  //     currency: order.currency,
-  //     name: 'Credits Payment',
-  //     description: "Credits Payment",
-  //     order_id: order.id,
-  //     receipt: order.receipt,
-  //     handler: async (response) => {
+    const rzp = new window.Razorpay(options)
+    rzp.open()
 
-  //       try {
+  }
+const paymentRazorpay = async (planId) => {
+  try {
+    if (!user) {
+      return setShowLogin(true)
+    }
+    const { data } = await axiosInstance.post(
+      '/user/pay-razor',
+      { planId }
+    )
+    if (data.success) {
+      initPay(data.order)
+    }
+  } catch (error) {
+    toast.error(error.response?.data?.message || error.message)
+  }
+}
 
-  //         const { data } = await axios.post(backendUrl + '/api/user/verify-razor', response, { headers: { token } })
-  //         if (data.success) {
-  //           loadCreditsData()
-  //           navigate('/')
-  //           toast.success('Credit Added')
-  //         }
-  //       } catch (error) {
-  //         toast.error(error.message)
-  //       }
-
-  //     }
-  //   }
-
-  //   const rzp = new window.Razorpay(options)
-  //   rzp.open()
-
-  // }
-
-  // const paymentRazorpay = async (planId) => {
-  //   try {
-
-  //     if (!user) {
-  //       setShowLogin(true)
-  //     }
-
-  //     const { data } = await axios.post(backendUrl + '/api/user/pay-razor', { planId }, { headers: { token } })
-  //     if (data.success) {
-  //       initPay(data.order)
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message)
-  //   }
-  // }
-
-  // const paymentStripe = async (planId) => {
-  //   try {
-
-  //     const { data } = await axios.post(backendUrl + '/api/user/pay-stripe', { planId }, { headers: { token } })
-  //     if (data.success) {
-  //       const { session_url } = data
-  //       window.location.replace(session_url)
-  //     } else {
-  //       toast.error(data.message)
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //     toast.error(error.message)
-  //   }
-  // }
 
   return (
     <motion.div className='min-h-[80vh] text-center pt-14 mb-10'
@@ -95,11 +76,8 @@ const BuyCredit = () => {
               <span className='text-3xl font-medium'>₹{item.price}</span>/ {item.credits} credits
             </p>
             <div className='flex flex-col mt-4'>
-              <button  className='w-full flex justify-center gap-2 border border-gray-400 mt-2 text-sm rounded-md py-2.5 min-w-52 hover:bg-blue-50 hover:border-blue-400'>
+              <button onClick={() => paymentRazorpay(item.id)} className='w-full flex justify-center gap-2 border border-gray-400 mt-2 text-sm rounded-md py-2.5 min-w-52 hover:bg-blue-50 hover:border-blue-400'>
                 <img className='h-4' src={assets.razorpay_logo} alt="" />
-              </button>
-              <button  className='w-full flex justify-center gap-2 border border-gray-400 mt-2 text-sm rounded-md py-2.5 min-w-52 hover:bg-blue-50 hover:border-blue-400'>
-                <img className='h-4' src={assets.stripe_logo} alt="" />
               </button>
             </div>
           </div>
@@ -111,5 +89,3 @@ const BuyCredit = () => {
 
 export default BuyCredit
 
-// onClick={() => paymentRazorpay(item.id)}
-// onClick={() => paymentStripe(item.id)}
