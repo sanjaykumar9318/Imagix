@@ -11,8 +11,12 @@ const Navbar = () => {
     const navigate = useNavigate()
     console.log(user)
     const handleLogout = async () => {
-    await logout()
-    window.location.href = '/'
+    console.log("BEFORE:", user);
+
+    await logout();
+
+    console.log("AFTER:", StateStore.getState().user);
+      navigate("/");
 }
 
     return (
@@ -32,6 +36,7 @@ const Navbar = () => {
                             <div className='relative group'>
                                 <img className='w-10 drop-shadow' src={assets.profile_icon} alt="" />
                                 <div className='absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded  pt-12'>
+                                    {/* hovering efect when kep cursonon prifle to show logogut */}
                                     <ul className='list-none m-0 p-2 bg-white rounded-md border  text-sm'>
                                         <li onClick={handleLogout} className='py-1 px-2 cursor-pointer pr-10'>Logout</li>
                                     </ul>

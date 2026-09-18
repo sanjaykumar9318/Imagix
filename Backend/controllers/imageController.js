@@ -26,11 +26,9 @@ export const generateImage = async (req, res) => {
       });
     }
 
-    // FormData
     const formdata = new FormData();
     formdata.append("prompt", prompt);
 
-    // Clipdrop API call
     const { data } = await axios.post(
       "https://clipdrop-api.co/text-to-image/v1",
       formdata,
@@ -42,11 +40,9 @@ export const generateImage = async (req, res) => {
       }
     );
 
-    // Convert image
     const base64Image = Buffer.from(data, "binary").toString("base64");
     const resultImage = `data:image/png;base64,${base64Image}`;
-
-    // Deduct credit
+    
     await userModel.findByIdAndUpdate(userId, {
       creditBalance: user.creditBalance - 1,
     });

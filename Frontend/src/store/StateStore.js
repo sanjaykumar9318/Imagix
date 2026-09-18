@@ -2,7 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import { toast } from "react-toastify";
 import axiosInstance from "../lib/axios.js";
-const backendUrl = import.meta.env.MODE === "development" ? "http://localhost:8080/api" : "/"
+const backendUrl = import.meta.env.MODE === "development" ? "http://localhost:8080/api" : "/api"
 
 
 const StateStore = create((set, get) => ({
@@ -39,8 +39,6 @@ const StateStore = create((set, get) => ({
 }
   },
  
-
-  // GENERATE IMAGE
   generateImage: async (prompt, navigate) => {
     try {
         const { loadCreditsData } = get();
@@ -65,17 +63,23 @@ const StateStore = create((set, get) => ({
         );
     }
 },
- // LOGOUT
   logout: async() => {
-    console.log("logoutclicked")
-    try{
-      await axiosInstance.post('/user/logout')
-      set({user: null,
-        credit:0
-      });
-    }
-    catch(err){
-      console.log(err.message)
+    console.log("logout clicked");
+
+    try {
+        const response = await axiosInstance.post('/user/logout');
+
+        console.log("logout API response:", response.status);
+
+        set({
+            user: null,
+            credit: 0
+        });
+
+        console.log("user after set:", StateStore.getState().user);
+
+    } catch (err) {
+        console.log("LOGOUT ERROR:", err);
     }
     
   }

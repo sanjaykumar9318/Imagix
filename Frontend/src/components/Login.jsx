@@ -29,7 +29,7 @@ const Login = () => {
             );
 
             await loadCreditsData();
-            setShowLogin(false);
+            setShowLogin(false); //to close form
 
         } else {
 

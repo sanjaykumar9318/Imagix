@@ -13,30 +13,47 @@ const BuyCredit = () => {
 
 
   const initPay = async (order) => {
-    const options = {
-      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-      amount: order.amount,
-      currency: order.currency,
-      name: 'Credits Payment',
-      description: "Credits Payment",
-      order_id: order.id,
-      receipt: order.receipt,
-      handler: async (response) => {
-        try {
-          const { data } = await axiosInstance.post('/user/verify-razor',response)
-          if (data.success) {
-            loadCreditsData()
-            navigate('/')
-            toast.success('Credit Added')
-          }
-        } catch (error) {
-          toast.error(error.message)
-        }
-      }
-    }
+    console.log(order)
+     const options = {
+    key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+    amount: order.amount,
+    currency: order.currency,
 
-    const rzp = new window.Razorpay(options)
-    rzp.open()
+    name: "Credits Payment",
+    description: "Credits Payment",
+
+    order_id: order.id,
+
+    handler: async (response) => {
+      try {
+        const { data } = await axiosInstance.post(
+          "/user/verify-razor",
+          response
+        );
+
+        if (data.success) {
+          await loadCreditsData();
+          navigate("/");
+          toast.success("Credit Added");
+        } else {
+          toast.error(data.message || "Payment verification failed");
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message ||
+          "Payment verification failed"
+        );
+      }
+    },
+
+    theme: {
+      color: "#3399cc",
+    },
+  };
+
+  const rzp = new window.Razorpay(options);
+
+  rzp.open();
 
   }
 const paymentRazorpay = async (planId) => {
@@ -48,7 +65,7 @@ const paymentRazorpay = async (planId) => {
       '/user/pay-razor',
       { planId }
     )
-    if (data.success) {
+    if (data.success) { //this .success is something i crated to track it was success from backend
       initPay(data.order)
     }
   } catch (error) {
