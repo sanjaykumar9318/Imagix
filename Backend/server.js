@@ -23,15 +23,11 @@ app.use(express.json())
 app.use('/api/user',userRouter)
 app.use('/api/image',imageRouter)
 if (process.env.NODE_ENV === "production") {
-  app.use(
-    express.static(path.join(__dirname, "../../frontend/dist")) 
-    // Treat this frontend/dist folder as a folder containing files that I can serve to the browser.
-  );
+  app.use(express.static(path.join(__dirname, "../Frontend/dist")));
 
   app.get("/{*any}", (req, res) => {
     res.sendFile(
-      path.join(__dirname, "../../frontend/dist/index.html")
-      // Send the React application's index.html to the browser
+      path.join(__dirname, "../Frontend/dist/index.html")
     );
   });
 }
